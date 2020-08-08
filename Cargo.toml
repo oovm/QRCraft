@@ -1,0 +1,14 @@
+[workspace]
+members = ["projects/*"]
+default-members = [
+    "projects/ascii-art-core",
+    "projects/ascii-art-web",
+    "projects/braille-art-core",
+]
+exclude = [
+    "projects/.DS_Store",
+    "projects/ascii-art-wolfram",
+]
+
+[profile.release]
+lto = true
