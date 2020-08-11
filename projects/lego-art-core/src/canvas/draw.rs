@@ -2,14 +2,14 @@ use super::*;
 use itertools::Itertools;
 use image::DynamicImage;
 
-impl AsciiCanvas {
+impl LegoCanvas {
     pub fn draw_text(&self) -> String {
         unimplemented!()
     }
 }
 
 
-impl AsciiCanvas {
+impl LegoCanvas {
     pub fn draw_svg(&self) -> String {
         let texts = self.data.iter().map(|e| e.as_svg()).join("");
         format!(
@@ -26,18 +26,18 @@ impl AsciiCanvas {
     }
 }
 
-impl AsciiCanvasItem {
+impl LegoCanvasItem {
     pub fn as_svg(&self) -> String {
         format!(r#"<text x="{x}" y="{y}" class="ascii-art">{text}</text>"#, x = self.x, y = self.y, text = self.data.char)
     }
 }
 
-impl AsciiCanvas {
+impl LegoCanvas {
     pub fn draw_image(&self)->DynamicImage {
         unimplemented!()
     }
 }
 
-impl AsciiCanvas {
+impl LegoCanvas {
     pub fn draw_canvas(&self) {}
 }

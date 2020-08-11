@@ -13,7 +13,7 @@ edition = "2018"
 serde = "1.0"
 serde_derive = "1.0"
 image = "0.23"
-ascii-art = {version = "0.1", path = "../ascii-art-core"}
-braille-art = {version = "0.1", path = "../braille-art-core"}
+ascii-art = {version = "0.1", path = "../lego-art-core" }
+braille-art = {version = "0.1", path = "../lego-art-themes" }
 yew = "0.17"
 anyhow = "1.0"

@@ -1,8 +1,8 @@
-use crate::{AsciiCanvas, Result};
+use crate::{LegoCanvas, Result};
 use std::{fs, path::Path};
 use image::ImageFormat;
 
-impl AsciiCanvas {
+impl LegoCanvas {
     pub fn save_svg(&self, path: impl AsRef<Path>) -> Result<()> {
         Ok(fs::write(path, self.draw_svg().as_bytes())?)
     }

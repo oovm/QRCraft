@@ -15,11 +15,11 @@ pub struct AsciiSet {
     pub font_size: f32,
     pub font_space: f32,
     pub font_line: f32,
-    pub images: Vec<Rc<AsciiData>>,
+    pub images: Vec<Rc<LegoData>>,
 }
 
 #[derive(Clone)]
-pub struct AsciiData {
+pub struct LegoData {
     pub char: char,
     pub height: usize,
     pub width: usize,
@@ -33,10 +33,10 @@ impl Default for AsciiSet {
     }
 }
 
-impl Debug for AsciiData {
+impl Debug for LegoData {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
-            AsciiData { char, height, width, image: _, mean } => f
+            LegoData { char, height, width, image: _, mean } => f
                 .debug_struct("AsciiData")
                 .field("char", char)
                 .field("height", height)
@@ -47,7 +47,7 @@ impl Debug for AsciiData {
     }
 }
 
-impl AsciiData {
+impl LegoData {
     pub fn rasterize(font: &Font, c: char, px: f32) -> Self {
         assert!(px > 0.0);
         let (metrics, bitmap) = font.rasterize(c, px);
@@ -74,7 +74,7 @@ impl AsciiSet {
         let set = BTreeSet::from_iter(vec);
         self.images = set
             .iter()
-            .map(|c| AsciiData::rasterize(font, *c, self.font_size))
+            .map(|c| LegoData::rasterize(font, *c, self.font_size))
             .sorted_by(|a, b| PartialOrd::partial_cmp(&a.mean, &b.mean).unwrap_or(Ordering::Equal))
             .map(|o| Rc::new(o))
             .collect();
@@ -83,7 +83,7 @@ impl AsciiSet {
         }
     }
 
-    pub fn nearest(&self, pixel: u8) -> Rc<AsciiData> {
+    pub fn nearest(&self, pixel: u8) -> Rc<LegoData> {
         assert!(!self.images.is_empty());
         let out = match self.images.len() {
             1 => unsafe { self.images.get_unchecked(0) },

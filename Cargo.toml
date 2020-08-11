@@ -1,9 +1,9 @@
 [workspace]
 members = ["projects/*"]
 default-members = [
-    "projects/ascii-art-core",
-    "projects/ascii-art-web",
-    "projects/braille-art-core",
+    "projects/lego-art-core",
+    "projects/lego-art-web",
+    "projects/lego-art-themes",
 ]
 exclude = [
     "projects/.DS_Store",
