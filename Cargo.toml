@@ -1,13 +1,12 @@
 [workspace]
 members = ["projects/*"]
 default-members = [
-    "projects/lego-art-core",
-    "projects/lego-art-web",
-    "projects/lego-art-themes",
+    "projects/mosaic-craft-core",
+    "projects/mosaic-craft-web",
 ]
 exclude = [
     "projects/.DS_Store",
-    "projects/ascii-art-wolfram",
+    "projects/mosaic-craft-themes",
 ]
 
 [profile.release]

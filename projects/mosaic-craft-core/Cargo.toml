@@ -1,5 +1,5 @@
 [package]
-name = "ascii-art"
+name = "mosaic-craft"
 version = "0.1.0"
 authors = ["Aster <192607617@qq.com>"]
 description = "..."
@@ -13,6 +13,7 @@ image = "0.23"
 fontdue = "0.4"
 itertools = "0.9"
 serde = { version = "1.0", features = ["derive"] }
+toml = "0.5"
 
 [dev-dependencies]
 
