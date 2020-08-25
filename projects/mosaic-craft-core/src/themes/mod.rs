@@ -12,8 +12,8 @@ pub struct MosaicCraftThemeConfig {
     name: String,
     designer: String,
     designer_url: String,
-    path: Vec<String>,
-    pack: Option<String>,
+    images_path: Vec<String>,
+    images_pack: Option<String>,
     preview: Option<String>,
 }
 
@@ -27,14 +27,24 @@ pub struct MosaicCraftTheme {
 
 impl Debug for MosaicCraftTheme {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match self {
-            MosaicCraftTheme { name, designer, designer_url, images } => f
-                .debug_struct("MosaicCraftTheme")
-                .field("name", name)
-                .field("designer", designer)
-                .field("designer_url", designer_url)
-                .field("images", &images.len())
-                .finish(),
+        f.debug_struct("MosaicCraftTheme")
+            .field("name", &self.name)
+            .field("designer", &self.designer)
+            .field("designer_url", &self.designer_url)
+            .field("images", &self.images.len())
+            .finish()
+    }
+}
+
+impl Default for MosaicCraftThemeConfig {
+    fn default() -> Self {
+        Self {
+            name: String::from("unknown"),
+            designer: String::from("Anonymous"),
+            designer_url: String::from("unknown"),
+            images_path: vec![],
+            images_pack: None,
+            preview: None
         }
     }
 }
