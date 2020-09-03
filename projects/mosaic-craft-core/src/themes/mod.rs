@@ -44,7 +44,18 @@ impl Default for MosaicCraftThemeConfig {
             designer_url: String::from("unknown"),
             images_path: vec![],
             images_pack: None,
-            preview: None
+            preview: None,
+        }
+    }
+}
+
+impl From<MosaicCraftThemeConfig> for MosaicCraftTheme {
+    fn from(cfg: MosaicCraftThemeConfig) -> Self {
+        Self {
+            name: cfg.name,
+            designer: cfg.designer,
+            designer_url: cfg.designer_url,
+            images: vec![]
         }
     }
 }

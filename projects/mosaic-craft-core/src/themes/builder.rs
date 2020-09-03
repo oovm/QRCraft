@@ -2,19 +2,28 @@ use crate::{
     themes::MosaicCraftThemeConfig, MosaicCraftTheme, Result, MOSAIC_CRAFT_MAX_BLOCK_SIZE, MOSAIC_CRAFT_THEME_CONFIG_NAME,
 };
 use image::{imageops::FilterType, DynamicImage, GenericImageView, RgbImage};
-use std::path::Path;
+use serde_json::Error;
+use std::{
+    fs::read_to_string,
+    path::{Path, PathBuf},
+};
 use walkdir::{DirEntry, WalkDir};
-use std::fs::read_to_string;
 
 pub fn repack_directory(from: impl AsRef<Path>, to: impl AsRef<Path>) -> Result<MosaicCraftTheme> {
-    let config_file = Path::new(&from).join(MOSAIC_CRAFT_THEME_CONFIG_NAME);
-    let mut theme = try_parse_config(config_file);
+    let config_file = from.as_ref().join(MOSAIC_CRAFT_THEME_CONFIG_NAME);
+    let mut config = MosaicCraftThemeConfig::try_parse_config(config_file);
+    let mut theme = MosaicCraftTheme::from(config);
+    let mut pack = vec![];
     let out = MosaicCraftTheme { name: "".to_string(), designer: "".to_string(), designer_url: "".to_string(), images: vec![] };
     for entry in std::fs::read_dir(from)?.filter_map(|e| e.ok()) {
-        let f_name = entry.file_name().to_string_lossy().to_string(); // FIXME: why use to_string
-        if f_name.ends_with(".png") {
-            format!("{}", f_name);
+        match MosaicCraftThemeConfig::try_parse_png(entry) {
+            None => (),
+            Some((img, name)) => {
+                config.images_path.push(name),
+                theme.push_image(img)
+            }
         }
+
     }
     unimplemented!()
 }
@@ -29,9 +38,33 @@ pub fn repack_all_theme(from: impl AsRef<Path>, to: impl AsRef<Path>) -> Result<
     unimplemented!()
 }
 
-fn try_parse_config(file: impl AsRef<Path>) -> MosaicCraftThemeConfig {
-    let raw = read_to_string(file).unwrap_or(String::from("|"));
-    serde_json::from_str::<MosaicCraftThemeConfig>(&raw).unwrap_or_default()
+impl MosaicCraftTheme {
+    fn push_image(&mut self, img: DynamicImage){
+        let name = file.parent().and_then(|e| e.file_name()).unwrap().to_string_lossy().to_string();
+        let raw = read_to_string(file).unwrap_or(String::from("|"));
+        match serde_json::from_str::<Self>(&raw) {
+            Ok(o) => o,
+            Err(_) => Self { name, ..Default::default() },
+        }
+    }
+}
+
+impl MosaicCraftThemeConfig {
+    fn try_parse_config(file: PathBuf) -> Self {
+        let name = file.parent().and_then(|e| e.file_name()).unwrap().to_string_lossy().to_string();
+        let raw = read_to_string(file).unwrap_or(String::from("|"));
+        match serde_json::from_str::<Self>(&raw) {
+            Ok(o) => o,
+            Err(_) => Self { name, ..Default::default() },
+        }
+    }
+    fn try_parse_png(file: DirEntry)->Option<(DynamicImage, String)> {
+        let f_name = file.file_name().to_string_lossy().to_string(); // FIXME: why use to_string
+        if f_name.ends_with(".png") {
+            print!("{}", f_name);
+        }
+        return None
+    }
 }
 
 #[rustfmt::skip]
