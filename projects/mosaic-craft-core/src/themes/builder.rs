@@ -1,31 +1,26 @@
 use crate::{
     themes::MosaicCraftThemeConfig, MosaicCraftTheme, Result, MOSAIC_CRAFT_MAX_BLOCK_SIZE, MOSAIC_CRAFT_THEME_CONFIG_NAME,
 };
-use image::{imageops::FilterType, DynamicImage, GenericImageView, RgbImage};
-use serde_json::Error;
+use image::{imageops::FilterType, DynamicImage, GenericImageView};
 use std::{
-    fs::read_to_string,
+    fs::{self, read_to_string},
     path::{Path, PathBuf},
 };
 use walkdir::{DirEntry, WalkDir};
 
-pub fn repack_directory(from: impl AsRef<Path>, to: impl AsRef<Path>) -> Result<MosaicCraftTheme> {
-    let config_file = from.as_ref().join(MOSAIC_CRAFT_THEME_CONFIG_NAME);
+pub fn repack_directory(config_from: impl AsRef<Path>, pack_to: impl AsRef<Path>) -> Result<MosaicCraftTheme> {
+    let config_file = config_from.as_ref().join(MOSAIC_CRAFT_THEME_CONFIG_NAME);
     let mut config = MosaicCraftThemeConfig::try_parse_config(config_file);
-    let mut theme = MosaicCraftTheme::from(config);
-    let mut pack = vec![];
-    let out = MosaicCraftTheme { name: "".to_string(), designer: "".to_string(), designer_url: "".to_string(), images: vec![] };
-    for entry in std::fs::read_dir(from)?.filter_map(|e| e.ok()) {
-        match MosaicCraftThemeConfig::try_parse_png(entry) {
-            None => (),
-            Some((img, name)) => {
-                config.images_path.push(name),
-                theme.push_image(img)
-            }
+    let mut theme = MosaicCraftTheme::from(config.clone());
+    for entry in std::fs::read_dir(config_from)?.filter_map(|e| e.ok()) {
+        if let Some((img, name)) = MosaicCraftThemeConfig::try_parse_png(entry) {
+            config.images_path.push(name);
+            theme.push_image(img);
         }
-
     }
-    unimplemented!()
+    fs::write(&config_file,serde_json::to_string(&address)?.as_bytes())?;
+    fs::write(pack_to,bincode::serialize(&world)?)?;
+    return Ok(theme);
 }
 
 pub fn repack_all_theme(from: impl AsRef<Path>, to: impl AsRef<Path>) -> Result<()> {
@@ -39,13 +34,10 @@ pub fn repack_all_theme(from: impl AsRef<Path>, to: impl AsRef<Path>) -> Result<
 }
 
 impl MosaicCraftTheme {
-    fn push_image(&mut self, img: DynamicImage){
-        let name = file.parent().and_then(|e| e.file_name()).unwrap().to_string_lossy().to_string();
-        let raw = read_to_string(file).unwrap_or(String::from("|"));
-        match serde_json::from_str::<Self>(&raw) {
-            Ok(o) => o,
-            Err(_) => Self { name, ..Default::default() },
-        }
+    fn push_image(&mut self, img: DynamicImage) {
+        let checked = check_image_size(img);
+        let mean = self.color_average.mean(&checked);
+        self.images.push((mean, checked));
     }
 }
 
@@ -58,12 +50,14 @@ impl MosaicCraftThemeConfig {
             Err(_) => Self { name, ..Default::default() },
         }
     }
-    fn try_parse_png(file: DirEntry)->Option<(DynamicImage, String)> {
-        let f_name = file.file_name().to_string_lossy().to_string(); // FIXME: why use to_string
-        if f_name.ends_with(".png") {
-            print!("{}", f_name);
+    fn try_parse_png(file: std::fs::DirEntry) -> Option<(DynamicImage, String)> {
+        match image::open(file.path()) {
+            Ok(o) => {
+                let name = file.file_name().to_string_lossy().to_string();
+                Some((o, name))
+            }
+            Err(_) => None,
         }
-        return None
     }
 }
 
@@ -79,10 +73,4 @@ fn check_image_size(image: DynamicImage) -> DynamicImage {
     else {
         return image;
     }
-}
-
-#[test]
-fn test() {
-    let pack = repack_directory("../mosaic-craft-themes/minecraft3d", "../mosaic-craft-themes").unwrap();
-    println!("{:?}", pack)
 }

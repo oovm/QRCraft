@@ -1,51 +1,32 @@
-mod data;
-use crate::{canvas::LegoCanvasItem, LegoArt, LegoCanvas, Result};
-pub use data::{LegoData, AsciiSet};
-use fontdue::Font;
-use image::{imageops::FilterType, io::Reader, DynamicImage, GenericImageView, Pixel};
-use std::{io::Cursor, path::Path};
+use image::{DynamicImage, GenericImageView, Rgb};
+use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone, Debug)]
-pub enum LegoColorMode {
-    Gray = 0,
-    Color = 1,
-    Mask = 2,
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+pub enum ColorAverage {
+    RGBSpace,
 }
 
-impl Default for LegoColorMode {
-    fn default() -> Self {
-        Self::Gray
-    }
+#[derive(Debug, Copy, Clone)]
+pub enum ColorMetrics {
+    Manhattan,
+    Euclid,
 }
 
-impl LegoArt {
-    pub fn build_font_cache(&mut self, font: &Font, chars: &str) {
-        self.char_set.load_string(font, chars)
-    }
-}
-
-impl LegoArt {
-    pub fn render_path(&self, path: impl AsRef<Path>) -> Result<LegoCanvas> {
-        let img = Reader::open(path)?.decode()?;
-        Ok(self.render(img))
-    }
-    pub fn render_bytes(&self, bytes: &[u8]) -> Result<LegoCanvas> {
-        let img = Reader::new(Cursor::new(bytes)).decode()?;
-        Ok(self.render(img))
-    }
-
-    pub fn render(&self, img: DynamicImage) -> LegoCanvas {
-        unsafe {
-            match self.pixel_aligned {
-                true => self.render_grid(img),
-                false => self.render_mono(),
+impl ColorAverage {
+    pub fn mean(&self, img: &DynamicImage) -> Rgb<u8> {
+        match self {
+            ColorAverage::RGBSpace => {
+                let all = img.width() as f32 * img.height() as f32;
+                let (mut r, mut g, mut b) = (0.0, 0.0, 0.0);
+                for c in img.to_rgb().pixels() {
+                    unsafe {
+                        r += *c.0.get_unchecked(0) as f32;
+                        g += *c.0.get_unchecked(1) as f32;
+                        b += *c.0.get_unchecked(2) as f32;
+                    }
+                }
+                Rgb([(r / all) as u8, (g / all) as u8, (b / all) as u8])
             }
         }
-    }
-    unsafe fn render_grid(&self, img: DynamicImage) -> LegoCanvas {
-       unimplemented!()
-    }
-    fn render_mono(&self) -> LegoCanvas {
-        unimplemented!()
     }
 }

@@ -1,25 +1,16 @@
 mod errors;
+mod render;
 mod themes;
 
 pub use crate::{
     errors::{LegoArtError, Result},
-    themes::MosaicCraftTheme,
+    render::{ColorAverage, ColorMetrics},
+    themes::{repack_all_theme, repack_directory, MosaicCraftTheme},
 };
 pub use image::{Luma, Rgb};
 
 pub const MOSAIC_CRAFT_MAX_BLOCK_SIZE: u32 = 100;
 pub const MOSAIC_CRAFT_THEME_CONFIG_NAME: &str = "mosaic-craft-theme.json";
-
-#[derive(Debug, Copy, Clone)]
-pub enum ColorAverage {
-    RGBSpace,
-}
-
-#[derive(Debug, Copy, Clone)]
-pub enum ColorMetrics {
-    Manhattan,
-    Euclid,
-}
 
 #[derive(Debug, Clone)]
 pub struct MosaicCraft {

@@ -1,11 +1,9 @@
 mod builder;
-use builder::{repack_all_theme, repack_directory};
+use crate::ColorAverage;
+pub use builder::{repack_all_theme, repack_directory};
 use image::{DynamicImage, Rgb};
 use serde::{Deserialize, Serialize};
-use std::{
-    fmt::{self, Debug, Formatter},
-    rc::Rc,
-};
+use std::fmt::{self, Debug, Formatter};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MosaicCraftThemeConfig {
@@ -14,6 +12,7 @@ pub struct MosaicCraftThemeConfig {
     designer_url: String,
     images_path: Vec<String>,
     images_pack: Option<String>,
+    color_average: ColorAverage,
     preview: Option<String>,
 }
 
@@ -22,6 +21,7 @@ pub struct MosaicCraftTheme {
     name: String,
     designer: String,
     designer_url: String,
+    color_average: ColorAverage,
     images: Vec<(Rgb<u8>, DynamicImage)>,
 }
 
@@ -44,6 +44,7 @@ impl Default for MosaicCraftThemeConfig {
             designer_url: String::from("unknown"),
             images_path: vec![],
             images_pack: None,
+            color_average: ColorAverage::RGBSpace,
             preview: None,
         }
     }
@@ -55,7 +56,8 @@ impl From<MosaicCraftThemeConfig> for MosaicCraftTheme {
             name: cfg.name,
             designer: cfg.designer,
             designer_url: cfg.designer_url,
-            images: vec![]
+            color_average: cfg.color_average,
+            images: vec![],
         }
     }
 }
