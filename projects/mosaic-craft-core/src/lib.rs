@@ -22,6 +22,6 @@ pub struct MosaicCraft {
 impl Default for MosaicCraft {
     fn default() -> Self {
         let theme = MosaicCraftTheme::load_buildin();
-        Self { color_average: ColorAverage::RGBSpace, color_metrics: ColorMetrics::Manhattan, theme }
+        Self { color_average: Default::default(), color_metrics: Default::default(), theme }
     }
 }

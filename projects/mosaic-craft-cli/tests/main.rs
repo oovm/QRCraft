@@ -1,4 +1,4 @@
-use mosaic_craft::{repack_all_theme, repack_directory, LegoArtError};
+use mosaic_craft_core::{repack_all_theme, repack_directory, LegoArtError};
 
 #[test]
 fn ready() {

@@ -6,7 +6,7 @@ use std::{
     fs::{self, read_to_string},
     path::{Path, PathBuf},
 };
-use walkdir::{DirEntry, WalkDir};
+use walkdir::WalkDir;
 
 pub fn repack_directory(config_from: impl AsRef<Path>, pack_to: impl AsRef<Path>) -> Result<MosaicCraftTheme> {
     let config_file = config_from.as_ref().join(MOSAIC_CRAFT_THEME_CONFIG_NAME);
@@ -18,19 +18,21 @@ pub fn repack_directory(config_from: impl AsRef<Path>, pack_to: impl AsRef<Path>
             theme.push_image(img);
         }
     }
-    fs::write(&config_file,serde_json::to_string(&address)?.as_bytes())?;
-    fs::write(pack_to,bincode::serialize(&world)?)?;
+    fs::write(&config_file, serde_json::to_string(&config)?)?;
+    fs::write(pack_to, bincode::serialize(&theme)?)?;
     return Ok(theme);
 }
 
-pub fn repack_all_theme(from: impl AsRef<Path>, to: impl AsRef<Path>) -> Result<()> {
-    for entry in WalkDir::new(from).follow_links(true).into_iter().filter_map(|e| e.ok()) {
+pub fn repack_all_theme(from_dir: impl AsRef<Path>, out_dir: impl AsRef<Path>) -> Result<()> {
+    for entry in WalkDir::new(from_dir).follow_links(true).into_iter().filter_map(|e| e.ok()) {
         let f_name = entry.file_name().to_string_lossy();
         if f_name.ends_with(MOSAIC_CRAFT_THEME_CONFIG_NAME) {
-            println!("{}", f_name);
+            let dir_name = entry.path().parent().unwrap().to_path_buf();
+            let out_file = out_dir.as_ref().join(format!("{}.mosaic-craft-theme", dir_name.to_string_lossy()));
+            repack_directory(dir_name, out_file);
         }
     }
-    unimplemented!()
+    Ok(())
 }
 
 impl MosaicCraftTheme {

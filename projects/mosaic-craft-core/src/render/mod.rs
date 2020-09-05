@@ -3,13 +3,25 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 pub enum ColorAverage {
-    RGBSpace,
+    RGBSpace = 0,
 }
 
 #[derive(Debug, Copy, Clone)]
 pub enum ColorMetrics {
-    Manhattan,
-    Euclid,
+    Manhattan = 0,
+    Euclid = 1,
+}
+
+impl Default for ColorAverage {
+    fn default() -> Self {
+        Self::RGBSpace
+    }
+}
+
+impl Default for ColorMetrics {
+    fn default() -> Self {
+        Self::Manhattan
+    }
 }
 
 impl ColorAverage {

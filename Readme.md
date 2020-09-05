@@ -30,3 +30,11 @@ pip install ascii-art
 npm install ascii-art --save
 ```
 
+## Theme
+
+
+### Pack all theme
+
+```sh
+wee theme
+```
