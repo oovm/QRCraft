@@ -3,7 +3,7 @@ mod render;
 mod themes;
 
 pub use crate::{
-    errors::{LegoArtError, Result},
+    errors::{MosaicCraftError, Result},
     render::{ColorAverage, ColorMetrics},
     themes::{repack_all_theme, repack_directory, MosaicCraftTheme},
 };
