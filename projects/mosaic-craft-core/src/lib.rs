@@ -5,7 +5,7 @@ mod themes;
 pub use crate::{
     errors::{MosaicCraftError, Result},
     render::{ColorAverage, ColorMetrics},
-    themes::{repack_all_theme, repack_directory, MosaicCraftTheme},
+    themes::{repack_all_theme, repack_directory, MosaicCraftTheme, MosaicCraftThemeItem},
 };
 pub use image::{Luma, Rgb};
 

@@ -7,6 +7,6 @@
         "push": "wee test && git push",
         "reset": "git reset Head~ --soft",
         "pub": "cargo-publish-all --yes --allow-dirty",
-        "theme": "cargo test --release --color=always --no-run --package mosaic-craft --test main pack_all_theme -- --ignored --exact"
+        "theme": "cargo test --release --color=always --package mosaic-craft-core --test main pack_all_theme --no-fail-fast -- --ignored --exact -Z unstable-options --show-output"
     }
 }

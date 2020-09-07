@@ -10,9 +10,9 @@ edition = "2018"
 
 [dependencies]
 mosaic-craft-core = {version = "0.1", path = "../mosaic-craft-core"}
+clap = "3.0.0-beta.2"
 
 [dev-dependencies]
-clap = "3.0.0-beta.2"
 
 [features]
 default = []

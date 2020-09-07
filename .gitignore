@@ -17,3 +17,5 @@ Cargo.lock
 *.ttf
 *.png
 *.ps1
+
+*.mosaic-craft-theme
