@@ -1,2 +1,2 @@
-*.txt linguist-language=mathematica
-*.svg linguist-language=mathematica
+*.json linguist-language=mathematica
+*.md linguist-language=mathematica
