@@ -19,7 +19,7 @@ pub fn repack_directory(config_from: impl AsRef<Path>, pack_to: impl AsRef<Path>
             theme.push_image(img);
         }
     }
-    fs::write(&config_file, serde_json::to_string(&config)?)?;
+    fs::write(&config_file, serde_json::to_string_pretty(&config)?)?;
     fs::write(pack_to, bincode::serialize(&theme)?)?;
     return Ok(theme);
 }
