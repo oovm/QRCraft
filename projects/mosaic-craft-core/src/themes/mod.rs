@@ -60,7 +60,7 @@ impl From<MosaicCraftThemeConfig> for MosaicCraftTheme {
 
 impl MosaicCraftTheme {
     pub fn load_buildin() -> Self {
-        unimplemented!()
+        bincode::deserialize(&include_bytes!("minecraft2d.mosaic-craft-theme")).unwrap()
     }
 }
 

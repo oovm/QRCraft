@@ -1,3 +1,5 @@
+mod renderers;
+
 use image::{DynamicImage, GenericImageView, Rgb};
 use serde::{Deserialize, Serialize};
 
@@ -25,7 +27,7 @@ impl Default for ColorMetrics {
 }
 
 impl ColorAverage {
-    pub fn mean(&self, img: &DynamicImage) -> Rgb<u8> {
+    pub fn mean(&self, img: &DynamicImage) -> (f32,f32,f32) {
         match self {
             ColorAverage::RGBSpace => {
                 let all = img.width() as f32 * img.height() as f32;
@@ -37,8 +39,20 @@ impl ColorAverage {
                         b += *c.0.get_unchecked(2) as f32;
                     }
                 }
-                Rgb([(r / all) as u8, (g / all) as u8, (b / all) as u8])
+                (r / all, g / all, b / all)
             }
         }
     }
+}
+
+
+impl ColorMetrics {
+    pub fn distance(&self, lhs: (f32,f32,f32), rhs: Rgb<u8>) {
+
+    }
+}
+
+
+pub unsafe fn rgb_to_f32(rgb: Rgb<u8>) {
+
 }
