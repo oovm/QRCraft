@@ -10,7 +10,9 @@ pub enum ColorAverage {
 
 #[derive(Debug, Copy, Clone)]
 pub enum ColorMetrics {
+    /// L1 distance
     Manhattan = 0,
+    /// L2 distance
     Euclid = 1,
 }
 
@@ -27,7 +29,7 @@ impl Default for ColorMetrics {
 }
 
 impl ColorAverage {
-    pub fn mean(&self, img: &DynamicImage) -> (f32,f32,f32) {
+    pub fn mean(&self, img: &DynamicImage) -> (f32, f32, f32) {
         match self {
             ColorAverage::RGBSpace => {
                 let all = img.width() as f32 * img.height() as f32;
@@ -45,14 +47,28 @@ impl ColorAverage {
     }
 }
 
-
 impl ColorMetrics {
-    pub fn distance(&self, lhs: (f32,f32,f32), rhs: Rgb<u8>) {
-
+    pub fn distance(&self, lhs: (f32, f32, f32), rhs: (f32, f32, f32)) -> f32 {
+        match self {
+            ColorMetrics::Manhattan => {
+                let dx = (lhs.0 - rhs.0).abs();
+                let dy = (lhs.1 - rhs.1).abs();
+                let dz = (lhs.2 - rhs.2).abs();
+                dx + dy + dz
+            }
+            ColorMetrics::Euclid => {
+                let dx = (lhs.0 - rhs.0).pow(2.0);
+                let dy = (lhs.1 - rhs.1).pow(2.0);
+                let dz = (lhs.2 - rhs.2).pow(2.0);
+                (dx + dy + dz).sqrt()
+            }
+        }
     }
 }
 
-
-pub unsafe fn rgb_to_f32(rgb: Rgb<u8>) {
-
+pub unsafe fn rgb_to_f32(c: Rgb<u8>) -> (f32, f32, f32) {
+    r = *c.0.get_unchecked(0) as f32;
+    g = *c.0.get_unchecked(1) as f32;
+    b = *c.0.get_unchecked(2) as f32;
+    (r, g, b)
 }

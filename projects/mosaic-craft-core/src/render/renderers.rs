@@ -1,7 +1,6 @@
-use crate::{MosaicCraft, MosaicCraftCanvas};
+use crate::{MosaicCraft, MosaicCraftCanvas, Result};
 use image::{io::Reader, DynamicImage};
 use std::{io::Cursor, path::Path};
-use crate::Result;
 
 impl MosaicCraft {
     pub fn render_path(&self, path: impl AsRef<Path>) -> Result<MosaicCraftCanvas> {
