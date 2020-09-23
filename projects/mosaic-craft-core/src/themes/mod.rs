@@ -1,7 +1,7 @@
 mod builder;
 use crate::ColorAverage;
 pub use builder::{repack_all_theme, repack_directory};
-use image::{DynamicImage, ImageFormat, ImageOutputFormat, Rgb};
+use image::{imageops::FilterType, DynamicImage, ImageFormat, ImageOutputFormat, Rgb};
 use serde::{Deserialize, Serialize};
 use std::fmt::{self, Debug, Formatter};
 
@@ -17,10 +17,10 @@ pub struct MosaicCraftThemeConfig {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct MosaicCraftTheme {
-    name: String,
-    authors: Vec<String>,
-    color_average: ColorAverage,
-    images: Vec<MosaicCraftThemeItem>,
+    pub name: String,
+    pub authors: Vec<String>,
+    pub color_average: ColorAverage,
+    pub images: Vec<MosaicCraftThemeItem>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -80,5 +80,8 @@ impl MosaicCraftThemeItem {
     }
     pub fn image(&self) -> DynamicImage {
         image::load_from_memory_with_format(&self.image, ImageFormat::Png).unwrap()
+    }
+    pub fn image_resized(&self, size: u32) -> DynamicImage {
+        self.image().resize_exact(size, size, FilterType::Nearest)
     }
 }
