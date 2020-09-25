@@ -1,5 +1,5 @@
-use crate::{MosaicCraft, MosaicCraftThemeItem, Rgb};
-use image::DynamicImage;
+use crate::MosaicCraftThemeItem;
+
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
@@ -11,5 +11,5 @@ pub struct MosaicCraftCanvas {
 pub struct MosaicCraftCanvasItem {
     pub x1: u32,
     pub y1: u32,
-    pub data: Rc<DynamicImage>,
+    pub data: Rc<MosaicCraftThemeItem>,
 }

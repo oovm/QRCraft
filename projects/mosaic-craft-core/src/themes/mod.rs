@@ -25,7 +25,7 @@ pub struct MosaicCraftTheme {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct MosaicCraftThemeItem {
-    color: (u8, u8, u8),
+    pub color: (f32, f32, f32),
     image: Vec<u8>,
 }
 
@@ -60,7 +60,7 @@ impl From<MosaicCraftThemeConfig> for MosaicCraftTheme {
 
 impl MosaicCraftTheme {
     pub fn load_buildin() -> Self {
-        bincode::deserialize(&include_bytes!("minecraft2d.mosaic-craft-theme")).unwrap()
+        bincode::deserialize(include_bytes!("minecraft2d.mosaic-craft-theme") as &[u8]).unwrap()
     }
 }
 
@@ -72,16 +72,21 @@ impl MosaicCraftThemeItem {
             let r = *color.0.get_unchecked(0);
             let g = *color.0.get_unchecked(1);
             let b = *color.0.get_unchecked(2);
-            Self { color: (r, g, b), image: buf }
+            Self { color: (r as f32, g as f32, b as f32), image: buf }
         }
     }
-    pub fn color(&self) -> Rgb<u8> {
-        Rgb([self.color.0, self.color.1, self.color.2])
+    pub fn rgb(&self) -> Rgb<u8> {
+        Rgb([self.color.0 as u8, self.color.1 as u8, self.color.2 as u8])
     }
     pub fn image(&self) -> DynamicImage {
         image::load_from_memory_with_format(&self.image, ImageFormat::Png).unwrap()
     }
-    pub fn image_resized(&self, size: u32) -> DynamicImage {
+    pub fn resized_image(&self, size: u32) -> DynamicImage {
         self.image().resize_exact(size, size, FilterType::Nearest)
+    }
+    pub fn resized_item(&self, size: u32) -> Self {
+        let mut buf = vec![];
+        self.resized_image(size).write_to(&mut buf, ImageOutputFormat::Png).unwrap();
+        Self { color: self.color, image: buf }
     }
 }

@@ -2,7 +2,7 @@ use crate::{
     themes::MosaicCraftThemeConfig, MosaicCraftTheme, MosaicCraftThemeItem, Result, MOSAIC_CRAFT_MAX_BLOCK_SIZE,
     MOSAIC_CRAFT_THEME_CONFIG_NAME,
 };
-use image::{imageops::FilterType, DynamicImage, GenericImageView};
+use image::{imageops::FilterType, DynamicImage, GenericImageView, ImageOutputFormat};
 use std::{
     fs::{self, read_to_string},
     path::{Path, PathBuf},
@@ -44,7 +44,9 @@ impl MosaicCraftTheme {
     fn push_image(&mut self, img: DynamicImage) {
         let checked = check_image_size(img);
         let mean = self.color_average.mean(&checked);
-        self.images.push(MosaicCraftThemeItem::new(mean, checked));
+        let mut buf = vec![];
+        checked.write_to(&mut buf, ImageOutputFormat::Png).unwrap();
+        self.images.push(MosaicCraftThemeItem { color: mean, image: buf });
     }
 }
 

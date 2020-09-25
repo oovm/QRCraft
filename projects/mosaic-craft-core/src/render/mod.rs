@@ -1,6 +1,6 @@
 mod renderers;
 
-use image::{DynamicImage, GenericImageView, Rgb};
+use image::{DynamicImage, GenericImageView};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
@@ -57,18 +57,11 @@ impl ColorMetrics {
                 dx + dy + dz
             }
             ColorMetrics::Euclid => {
-                let dx = (lhs.0 - rhs.0).pow(2.0);
-                let dy = (lhs.1 - rhs.1).pow(2.0);
-                let dz = (lhs.2 - rhs.2).pow(2.0);
+                let dx = (lhs.0 - rhs.0).powf(2.0);
+                let dy = (lhs.1 - rhs.1).powf(2.0);
+                let dz = (lhs.2 - rhs.2).powf(2.0);
                 (dx + dy + dz).sqrt()
             }
         }
     }
-}
-
-pub unsafe fn rgb_to_f32(c: Rgb<u8>) -> (f32, f32, f32) {
-    r = *c.0.get_unchecked(0) as f32;
-    g = *c.0.get_unchecked(1) as f32;
-    b = *c.0.get_unchecked(2) as f32;
-    (r, g, b)
 }
