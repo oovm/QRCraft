@@ -10,7 +10,7 @@ pub use crate::{
 };
 pub use image::{Luma, Rgb};
 
-pub const MOSAIC_CRAFT_MAX_BLOCK_SIZE: u32 = 100;
+pub const MOSAIC_CRAFT_MAX_BLOCK_SIZE: u32 = 1024;
 pub const MOSAIC_CRAFT_THEME_CONFIG_NAME: &str = "mosaic-craft-theme.json";
 
 #[derive(Debug, Clone)]
