@@ -1,15 +1,9 @@
-use crate::{LegoCanvas, Result};
-use std::{fs, path::Path};
+use crate::{MosaicCraftCanvas, Result};
 use image::ImageFormat;
+use std::path::Path;
 
-impl LegoCanvas {
-    pub fn save_svg(&self, path: impl AsRef<Path>) -> Result<()> {
-        Ok(fs::write(path, self.draw_svg().as_bytes())?)
-    }
+impl MosaicCraftCanvas {
     pub fn save_image(&self, path: impl AsRef<Path>) -> Result<()> {
         Ok(self.draw_image().save_with_format(path, ImageFormat::Png)?)
-    }
-    pub fn save_text(&self, path: impl AsRef<Path>) -> Result<()> {
-        Ok(fs::write(path, self.draw_text().as_bytes())?)
     }
 }

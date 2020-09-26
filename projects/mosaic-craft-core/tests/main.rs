@@ -1,8 +1,15 @@
-use mosaic_craft_core::repack_all_theme;
+use mosaic_craft_core::{repack_all_theme, MosaicCraft};
 
 #[test]
 fn ready() {
     println!("it works!")
+}
+
+#[test]
+fn test() {
+    let ctx = MosaicCraft::default();
+    let out = ctx.render_path("tests/wolfram-wolf.png").unwrap();
+    out.save_image("tests/wolfram-wolf-out.png").unwrap()
 }
 
 #[ignore]

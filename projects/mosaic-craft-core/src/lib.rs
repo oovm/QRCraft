@@ -20,11 +20,19 @@ pub struct MosaicCraft {
     pub theme: MosaicCraftTheme,
     pub background: Option<Rgb<u8>>,
     pub grid_size: u32,
+    pub magnify: f32,
 }
 
 impl Default for MosaicCraft {
     fn default() -> Self {
         let theme = MosaicCraftTheme::load_buildin();
-        Self { color_average: Default::default(), color_metrics: Default::default(), theme, background: None, grid_size: 16 }
+        Self {
+            color_average: Default::default(),
+            color_metrics: Default::default(),
+            theme,
+            background: None,
+            grid_size: 16,
+            magnify: 1.0,
+        }
     }
 }

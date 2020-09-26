@@ -1,5 +1,5 @@
 use crate::{MosaicCraft, MosaicCraftCanvas, MosaicCraftCanvasItem, MosaicCraftThemeItem, Result};
-use image::{imageops::FilterType, io::Reader, DynamicImage, GenericImageView, ImageBuffer, Rgb};
+use image::{io::Reader, DynamicImage, GenericImageView, ImageBuffer, Rgb};
 use itertools::Itertools;
 use std::{io::Cursor, path::Path, rc::Rc};
 
@@ -15,22 +15,19 @@ impl MosaicCraft {
 
     pub fn render(&self, img: DynamicImage) -> MosaicCraftCanvas {
         let mut theme = self.theme.images.iter().map(|e| Rc::new(e.resized_item(self.grid_size))).collect_vec();
-        match self.background {
-            None => (),
-            Some(c) => {
-                let bg = ImageBuffer::from_pixel(self.grid_size, self.grid_size, c);
-                theme.push(Rc::new(MosaicCraftThemeItem::new(c, DynamicImage::ImageRgb8(bg))))
-            }
+        if let Some(c) = self.background {
+            let bg = ImageBuffer::from_pixel(self.grid_size, self.grid_size, c);
+            theme.push(Rc::new(MosaicCraftThemeItem::new(c, DynamicImage::ImageRgb8(bg))))
         }
-        let w = img.width() / self.grid_size;
-        let h = img.height() / self.grid_size;
+        let w = (img.width() as f32 * self.magnify).ceil() as u32 / self.grid_size;
+        let h = (img.height() as f32 * self.magnify).ceil() as u32 / self.grid_size;
         let mut data = Vec::with_capacity(w as usize * h as usize);
-        let resized = img.resize_exact(w, h, FilterType::Triangle).to_rgb();
+        let resized = img.thumbnail_exact(w, h).to_rgb();
         for (x, y, c) in resized.enumerate_pixels() {
             let block = MosaicCraftCanvasItem { x1: x, y1: y, data: self.find_nearest_img(&theme, c) };
             data.push(block)
         }
-        return MosaicCraftCanvas { data };
+        return MosaicCraftCanvas { data, size_x: w * self.grid_size, size_y: h * self.grid_size, grid: self.grid_size };
     }
     fn find_nearest_img(&self, theme: &[Rc<MosaicCraftThemeItem>], color: &Rgb<u8>) -> Rc<MosaicCraftThemeItem> {
         unsafe {
