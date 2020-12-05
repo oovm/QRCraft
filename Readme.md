@@ -1,7 +1,7 @@
-Ascii Art
-=========
+MosaicCraft
+===========
 
-Start from Ascii, beyond Ascii.
+
 
 ## Examples
 
@@ -15,19 +15,18 @@ Start from Ascii, beyond Ascii.
 ### Rust
 
 - See document:
-    - Ascii Art
-    - Braille Art
+
 
 ### Python
 
 ```sh
-pip install ascii-art
+pip install mocraft
 ```
 
 ### Typescript/Javascript
 
 ```sh
-npm install ascii-art --save
+npm install mocraft --save
 ```
 
 ## Theme
